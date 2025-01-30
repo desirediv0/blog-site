@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Home, BookOpen, LineChart, TrendingUp, Users, User, Menu } from "lucide-react"
+import Link from "next/link"
+import Image from "next/image"
 
 const menuItems = [
     {
@@ -52,6 +54,33 @@ const menuItems = [
     },
 ]
 
+
+const Logo = () => (
+    <Link href="/" className="flex items-center">
+        {/* Desktop Logo */}
+        <div className="hidden lg:block">
+            <Image
+                src="/bg.png"
+                alt="Desktop Logo"
+                width={150}
+                height={50}
+                priority
+                className="object-contain"
+            />
+        </div>
+        {/* Mobile Logo */}
+        <div className="lg:hidden">
+            <Image
+                src="/bg-mob.png"
+                alt="Mobile Logo"
+                width={60}
+                height={60}
+                priority
+                className="object-contain"
+            />
+        </div>
+    </Link>
+)
 export function NavMenu() {
     const [isOpen, setIsOpen] = useState(false)
 
@@ -96,15 +125,7 @@ export function NavMenu() {
     const DesktopMenu = () => (
         <NavigationMenu className="hidden lg:block">
             <NavigationMenuList>
-                <NavigationMenuItem>
-                    <NavigationMenuLink
-                        className="flex items-center gap-2 text-lg font-bold text-indigo-700 hover:text-indigo-600 transition-colors"
-                        href="/"
-                    >
-                        <Home className="w-5 h-5" />
-                        HOME
-                    </NavigationMenuLink>
-                </NavigationMenuItem>
+
 
                 {menuItems.map((item) => (
                     <NavigationMenuItem key={item.title}>
@@ -128,19 +149,28 @@ export function NavMenu() {
     )
 
     return (
-        <div className="flex items-center justify-between">
-            <MobileMenu />
-            <DesktopMenu />
+        <div className="flex items-center justify-between px-4 ">
+            <div className="flex items-center">
+                <Logo />
+                <div className="hidden lg:block">
+                    <DesktopMenu />
+                </div>
+            </div>
 
-            <div className="flex items-center gap-4">
-                <Button variant="ghost" className="hidden lg:flex text-indigo-600 hover:bg-indigo-100">
-                    <User className="w-5 h-5 mr-2" />
-                    LOGIN
-                </Button>
+            <div className="flex items-center gap-2">
+                <div className="hidden lg:block">
+                    <Button variant="ghost" className="text-indigo-600 hover:bg-indigo-100">
+                        <User className="w-5 h-5 mr-2" />
+                        LOGIN
+                    </Button>
+                </div>
                 <Button className="bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200">
                     <span className="hidden lg:inline">GET FREE ACCOUNT</span>
                     <span className="lg:hidden">SIGN UP</span>
                 </Button>
+                <div className="lg:hidden">
+                    <MobileMenu />
+                </div>
             </div>
         </div>
     )
