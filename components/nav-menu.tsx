@@ -93,13 +93,13 @@ export function NavMenu() {
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[400px]">
                 <nav className="flex flex-col gap-4">
-                    <a
+                    <Link
                         href="/"
                         className="flex items-center gap-2 text-lg font-bold text-indigo-700 hover:text-indigo-600 transition-colors"
                     >
                         <Home className="w-5 h-5" />
                         HOME
-                    </a>
+                    </Link>
                     {menuItems.map((item) => (
                         <div key={item.title} className="space-y-2">
                             <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-700">
@@ -134,7 +134,7 @@ export function NavMenu() {
                             {item.title}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
-                            <ul className="grid w-[400px] gap-3 p-4 lg:w-[500px] lg:grid-cols-2">
+                            <ul className="grid w-[400px] gap-3 p-4 lg:w-[750px] lg:grid-cols-2">
                                 {item.items.map((subItem) => (
                                     <li key={subItem.name}>
                                         <NavigationMenuLink href={subItem.href}>{subItem.name}</NavigationMenuLink>
@@ -159,15 +159,18 @@ export function NavMenu() {
 
             <div className="flex items-center gap-2">
                 <div className="hidden lg:block">
-                    <Button variant="ghost" className="text-indigo-600 hover:bg-indigo-100">
-                        <User className="w-5 h-5 mr-2" />
-                        LOGIN
-                    </Button>
+                    <Link href="/auth">
+                        <Button variant="ghost" className="text-indigo-600 hover:bg-indigo-100">
+                            <User className="w-5 h-5 mr-2" />
+                            LOGIN
+                        </Button>
+                    </Link>
                 </div>
-                <Button className="bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200">
-                    <span className="hidden lg:inline">GET FREE ACCOUNT</span>
-                    <span className="lg:hidden">SIGN UP</span>
-                </Button>
+                <Link href="/auth">
+                    <Button className="bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200">
+                        <span className="inline">SIGN UP</span>
+                    </Button>
+                </Link>
                 <div className="lg:hidden">
                     <MobileMenu />
                 </div>
