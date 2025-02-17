@@ -34,13 +34,13 @@ export default function AuthPage() {
                     height={40}
                     className="mx-auto"
                 />
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                <h2 className="mt-6 text-center text-3xl font-extrabold text-[var(--foreground)]">
                     {isLogin ? "Sign in to your account" : "Create your account"}
                 </h2>
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                <div className="bg-[var(--background)] py-8 px-4 shadow sm:rounded-lg sm:px-10">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                         {!isLogin && (
                             <div>
@@ -117,14 +117,14 @@ export default function AuthPage() {
                         {isLogin && (
                             <div className="flex items-center justify-end">
                                 <div className="text-sm">
-                                    <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                    <a href="#" className="font-medium text-[var(--custom-600)] hover:text-[var(--custom-700)]">
                                         Forgot your password?
                                     </a>
                                 </div>
                             </div>
                         )}
 
-                        <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700">
+                        <Button type="submit" className="w-full bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">
                             {isLogin ? "Sign in" : "Register"}
                         </Button>
                     </form>
@@ -135,14 +135,14 @@ export default function AuthPage() {
                                 <div className="w-full border-t border-gray-300" />
                             </div>
                             <div className="relative flex justify-center text-sm">
-                                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                                <span className="px-2 bg-[var(-background)] text-gray-500">Or continue with</span>
                             </div>
                         </div>
 
                         <div className="mt-6">
                             <Button
                                 type="button"
-                                className="w-full flex justify-center items-center gap-2 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                                className="w-full flex justify-center items-center gap-2 bg-[var(-background)] text-gray-700 border border-gray-300 hover:bg-gray-50"
                             >
                                 <Image
                                     src="/images/google.svg"
@@ -160,8 +160,8 @@ export default function AuthPage() {
                         <button
                             type="button"
                             onClick={() => setIsLogin(!isLogin)}
-                            className="font-medium text-indigo-600 hover:text-indigo-500"
-                        >
+                            className="font-medium text-[var(--custom-600)] hover:text-[var(--custom-700)]">
+
                             {isLogin ? "Register" : "Sign in"}
                         </button>
                     </p>

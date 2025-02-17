@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+
+:root {
+  --background: #ffffff; /* White background */
+  --foreground: #171717; /* Dark text for good contrast */
+  
+  /* Custom color variations based on purple hues */
+  --custom-50: #f5e6f7; /* Light Lavender */
+  --custom-100: #e3bff5; /* Soft Purple */
+  --custom-200: #d399e0; /* Lavender */
+  --custom-300: #c080cd; /* Light Purple */
+  --custom-400: #9f62b3; /* Medium Purple */
+  --custom-500: #6C3C90; /* Main Logo Color (Deep Purple) */
+  --custom-600: #5a2d7e; /* Dark Purple */
+  --custom-700: #4a1f69; /* Darker Purple */
+  --custom-800: #3b1555; /* Very Dark Purple */
+  --custom-900: #2c0f42; /* Almost Black Purple */
+
+  --main-custom: var(--custom-500); /* Main custom color (Purple) */
+}
+
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
