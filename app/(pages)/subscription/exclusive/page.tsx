@@ -23,7 +23,7 @@ const exclusiveResources = [
 export default function ExclusiveResources() {
     return (
         <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-8 text-center">Exclusive Resources</h1>
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">Exclusive Resources</h1>
             <div className="grid md:grid-cols-2 gap-8">
                 {exclusiveResources.map((resource, index) => (
                     <Card key={index}>
@@ -32,7 +32,7 @@ export default function ExclusiveResources() {
                         </CardHeader>
                         <CardContent>
                             <p className="mb-4">{resource.description}</p>
-                            <Button>Access Resource</Button>
+                            <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">Access Resource</Button>
                         </CardContent>
                     </Card>
                 ))}

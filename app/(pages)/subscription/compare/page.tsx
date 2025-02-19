@@ -24,7 +24,7 @@ const plans = [
 export default function ComparePlans() {
     return (
         <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-8 text-center">Free vs Premium</h1>
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">Free vs Premium</h1>
             <div className="grid md:grid-cols-2 gap-8">
                 {plans.map((plan, index) => (
                     <Card key={index}>
@@ -49,7 +49,7 @@ export default function ComparePlans() {
                                     </li>
                                 ))}
                             </ul>
-                            <Button className="w-full">{plan.title === "Free" ? "Sign Up" : "Upgrade"}</Button>
+                            <Button className="w-full bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">{plan.title === "Free" ? "Sign Up" : "Upgrade"}</Button>
                         </CardContent>
                     </Card>
                 ))}

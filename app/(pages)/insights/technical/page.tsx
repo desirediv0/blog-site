@@ -24,7 +24,7 @@ const technicalCommentary = [
 export default function TechnicalCommentary() {
     return (
         <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-8 text-center">Technical Commentary</h1>
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">Technical Commentary</h1>
             <div className="grid md:grid-cols-2 gap-8">
                 {technicalCommentary.map((commentary, index) => (
                     <Card key={index}>
@@ -33,7 +33,7 @@ export default function TechnicalCommentary() {
                         </CardHeader>
                         <CardContent>
                             <p className="mb-4">{commentary.description}</p>
-                            <Button>View Full Analysis</Button>
+                            <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">View Full Analysis</Button>
                         </CardContent>
                     </Card>
                 ))}

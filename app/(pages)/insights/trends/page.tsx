@@ -23,7 +23,7 @@ const marketTrends = [
 export default function MarketTrends() {
     return (
         <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-8 text-center">Market Trends</h1>
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">Market Trends</h1>
             <div className="grid md:grid-cols-2 gap-8">
                 {marketTrends.map((trend, index) => (
                     <Card key={index}>
@@ -32,7 +32,7 @@ export default function MarketTrends() {
                         </CardHeader>
                         <CardContent>
                             <p className="mb-4">{trend.description}</p>
-                            <Button>Read Full Report</Button>
+                            <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">Read Full Report</Button>
                         </CardContent>
                     </Card>
                 ))}

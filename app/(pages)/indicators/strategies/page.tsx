@@ -23,7 +23,7 @@ const strategies = [
 export default function StrategyBreakdown() {
     return (
         <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-8 text-center">Strategy Breakdown</h1>
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">Strategy Breakdown</h1>
             <div className="grid md:grid-cols-2 gap-8">
                 {strategies.map((strategy, index) => (
                     <Card key={index}>
@@ -32,7 +32,7 @@ export default function StrategyBreakdown() {
                         </CardHeader>
                         <CardContent>
                             <p className="mb-4">{strategy.description}</p>
-                            <Button>View Strategy</Button>
+                            <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">View Strategy</Button>
                         </CardContent>
                     </Card>
                 ))}

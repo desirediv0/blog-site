@@ -29,7 +29,7 @@ const indicators = [
 export default function IndicatorsScripts() {
     return (
         <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-8 text-center">Indicators & Scripts</h1>
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">Indicators & Scripts</h1>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {indicators.map((indicator, index) => (
                     <Card key={index}>
@@ -39,7 +39,7 @@ export default function IndicatorsScripts() {
                         <CardContent>
                             <p className="text-sm text-gray-500 mb-2">{indicator.type}</p>
                             <p className="mb-4">{indicator.description}</p>
-                            <Button>View Details</Button>
+                            <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">View Details</Button>
                         </CardContent>
                     </Card>
                 ))}
