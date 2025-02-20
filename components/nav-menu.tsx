@@ -126,7 +126,6 @@ export function NavMenu() {
         <NavigationMenu className="hidden lg:block">
             <NavigationMenuList>
 
-
                 {menuItems.map((item) => (
                     <NavigationMenuItem key={item.title}>
                         <NavigationMenuTrigger className="flex items-center gap-2 text-gray-600 hover:text-[var(--custom-600)]">
@@ -137,7 +136,7 @@ export function NavMenu() {
                             <ul className="grid w-[400px] gap-3 p-4 lg:w-[750px] lg:grid-cols-2">
                                 {item.items.map((subItem) => (
                                     <li key={subItem.name}>
-                                        <NavigationMenuLink href={subItem.href}>{subItem.name}</NavigationMenuLink>
+                                        <NavigationMenuLink href={subItem.href} className="block p-3 rounded-lg hover:bg-[var(--custom-50)] hover:text-black transition-all duration-200">{subItem.name}</NavigationMenuLink>
                                     </li>
                                 ))}
                             </ul>
@@ -159,7 +158,7 @@ export function NavMenu() {
             <div className="flex items-center">
                 <div className="mx-2">
                     <Link href="/auth">
-                        <Button variant="outline" className="text-[var(--custom-600)] hover:bg-[var(--custom-100)]">
+                        <Button variant="default" className="bg-[var(--custom-600)] text-white hover:bg-[var(--custom-700)] transition-colors">
                             <User className="w-5 h-5 mr-1" />
                             Sign In
                         </Button>
