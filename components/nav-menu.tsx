@@ -91,7 +91,7 @@ export function NavMenu() {
                     <Menu className="w-6 h-6" />
                 </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+            <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-white">
                 <nav className="flex flex-col gap-4">
                     <Link
                         href="/"
@@ -156,21 +156,15 @@ export function NavMenu() {
                     <DesktopMenu />
                 </div>
             </div>
-
-            <div className="flex items-center gap-2">
-                <div className="hidden lg:block">
+            <div className="flex items-center">
+                <div className="mx-2">
                     <Link href="/auth">
-                        <Button variant="ghost" className="text-[var(--custom-600)] hover:bg-[var(--custom-100)]">
-                            <User className="w-5 h-5 mr-2" />
-                            LOGIN
+                        <Button variant="outline" className="text-[var(--custom-600)] hover:bg-[var(--custom-100)]">
+                            <User className="w-5 h-5 mr-1" />
+                            Sign In
                         </Button>
                     </Link>
                 </div>
-                <Link href="/auth">
-                    <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-500)] shadow-lg shadow-[var(--custom-200)]">
-                        <span className="inline">SIGN UP</span>
-                    </Button>
-                </Link>
                 <div className="lg:hidden">
                     <MobileMenu />
                 </div>

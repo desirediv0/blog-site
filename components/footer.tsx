@@ -84,7 +84,7 @@ export function Footer() {
                         <p className="mb-4 text-gray-600 text-sm text-center sm:text-left">
                             Stay updated with our latest insights and strategies.
                         </p>
-                        <form className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto sm:mx-0">
+                        <form className="flex flex-col  gap-2  mx-auto ">
                             <input
                                 type="email"
                                 placeholder="Your email"
@@ -92,10 +92,11 @@ export function Footer() {
                             />
                             <button
                                 type="submit"
-                                className="px-3.5 py-2 bg-[var(--custom-600)] text-white rounded-md hover:bg-[var(--custom-700)] transition-colors whitespace-nowrap inline-flex items-center gap-2 group"
+                                className="px-3.5 py-2 bg-[var(--custom-600)] text-white rounded-md hover:bg-[var(--custom-700)] transition-colors whitespace-nowrap inline-flex items-center gap-2 group justify-center"
                             >
 
                                 <Send className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                                <span className="text-sm">Subscribe</span>
                             </button>
                         </form>
                     </div>
@@ -103,7 +104,7 @@ export function Footer() {
 
                 {/* Copyright Section */}
                 <div className="mt-8 pt-8 border-t border-gray-200 text-center text-sm text-gray-600">
-                    <p>&copy; {new Date().getFullYear()} Trading Platform. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Stockey. All rights reserved.</p>
                 </div>
             </div>
         </footer>

@@ -9,7 +9,7 @@ import { Footer } from "@/components/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Trading Platform",
+  title: "Stockey - Discover trading strategies, indicators, and market insights",
   description: "Discover trading strategies, indicators, and market insights",
 }
 
