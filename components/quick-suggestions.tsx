@@ -35,11 +35,11 @@ export function QuickSuggestions() {
                 <Button
                     key={text}
                     variant="outline"
-                    className="h-auto py-6 px-4 bg-white/50 hover:bg-white/80 border-indigo-100 
-                   hover:border-indigo-300 shadow-sm hover:shadow-md transition-all"
+                    className="h-auto py-6 px-4 bg-white/50 hover:bg-white/80 border-[var(--custom-100)] 
+                   hover:border-[var(--custom-300)] shadow-sm hover:shadow-md transition-all"
                 >
                     <div className="flex flex-col items-center gap-2">
-                        <Icon className="w-6 h-6 text-indigo-600" />
+                        <Icon className="w-8 h-8 text-[var(--custom-600)]" />
                         <span className="text-sm font-medium text-gray-700">{text}</span>
                     </div>
                 </Button>

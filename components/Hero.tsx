@@ -12,7 +12,7 @@ export default function Hero() {
             <div className="container mx-auto px-4">
                 {/* Hero Section */}
                 <section className="py-12 md:py-24 text-center">
-                    <h1 className="mb-6 text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+                    <h1 className="mb-6 text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[var(--custom-500)] to-purple-600">
                         Trading Resources & Analysis
                     </h1>
                     <p className="mb-12 text-lg md:text-xl text-gray-600">

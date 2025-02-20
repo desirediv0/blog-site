@@ -10,22 +10,22 @@ export function Footer() {
                         <h3 className="font-bold mb-4 text-lg">Quick Links</h3>
                         <ul className="space-y-3">
                             <li>
-                                <a href="#" className="hover:text-indigo-600 transition-colors">
+                                <a href="#" className="hover:text-[var(--custom-600)] transition-colors">
                                     Home
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="hover:text-indigo-600 transition-colors">
+                                <a href="#" className="hover:text-[var(--custom-600)] transition-colors">
                                     Trading Resources
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="hover:text-indigo-600 transition-colors">
+                                <a href="#" className="hover:text-[var(--custom-600)] transition-colors">
                                     Market Insights
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="hover:text-indigo-600 transition-colors">
+                                <a href="#" className="hover:text-[var(--custom-600)] transition-colors">
                                     Subscription
                                 </a>
                             </li>
@@ -37,22 +37,22 @@ export function Footer() {
                         <h3 className="font-bold mb-4 text-lg">Support</h3>
                         <ul className="space-y-3">
                             <li>
-                                <a href="#" className="hover:text-indigo-600 transition-colors">
+                                <a href="#" className="hover:text-[var(--custom-600)] transition-colors">
                                     FAQ
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="hover:text-indigo-600 transition-colors">
+                                <a href="#" className="hover:text-[var(--custom-600)] transition-colors">
                                     Contact Us
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="hover:text-indigo-600 transition-colors">
+                                <a href="#" className="hover:text-[var(--custom-600)] transition-colors">
                                     Terms of Service
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="hover:text-indigo-600 transition-colors">
+                                <a href="#" className="hover:text-[var(--custom-600)] transition-colors">
                                     Privacy Policy
                                 </a>
                             </li>
@@ -63,16 +63,16 @@ export function Footer() {
                     <div className="text-center sm:text-left">
                         <h3 className="font-bold mb-4 text-lg">Connect With Us</h3>
                         <div className="flex justify-center sm:justify-start space-x-4">
-                            <a href="#" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors">
+                            <a href="#" className="p-2 text-gray-600 hover:text-[var(--custom-600)] transition-colors">
                                 <Facebook className="w-6 h-6" />
                             </a>
-                            <a href="#" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors">
+                            <a href="#" className="p-2 text-gray-600 hover:text-[var(--custom-600)] transition-colors">
                                 <Twitter className="w-6 h-6" />
                             </a>
-                            <a href="#" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors">
+                            <a href="#" className="p-2 text-gray-600 hover:text-[var(--custom-600)] transition-colors">
                                 <Instagram className="w-6 h-6" />
                             </a>
-                            <a href="#" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors">
+                            <a href="#" className="p-2 text-gray-600 hover:text-[var(--custom-600)] transition-colors">
                                 <Linkedin className="w-6 h-6" />
                             </a>
                         </div>
@@ -88,11 +88,11 @@ export function Footer() {
                             <input
                                 type="email"
                                 placeholder="Your email"
-                                className="flex-1 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="flex-1 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--custom-500)] focus:border-[var(--custom-500)]"
                             />
                             <button
                                 type="submit"
-                                className="px-3.5 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors whitespace-nowrap inline-flex items-center gap-2 group"
+                                className="px-3.5 py-2 bg-[var(--custom-600)] text-white rounded-md hover:bg-[var(--custom-700)] transition-colors whitespace-nowrap inline-flex items-center gap-2 group"
                             >
 
                                 <Send className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />

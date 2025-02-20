@@ -20,7 +20,7 @@ export function FeaturedResources() {
                         <CardContent>
                             <p className="mb-4">{resource.type}</p>
                             <Button
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                                className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)] text-white"
                             >Learn More</Button>
                         </CardContent>
                     </Card>

@@ -14,7 +14,7 @@ export function Newsletter() {
                 </p>
                 <form className="flex">
                     <Input type="email" placeholder="Enter your email" className="flex-grow mr-4 rounded-l-md" />
-                    <Button className="rounded-r-md bg-indigo-600 hover:bg-indigo-700 text-white">Subscribe</Button>
+                    <Button className="rounded-r-md bg-[var(--custom-600)] hover:bg-[var(--custom-700)] text-white">Subscribe</Button>
                 </form>
             </div>
         </section>
