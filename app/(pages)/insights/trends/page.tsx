@@ -1,43 +1,74 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+'use client';
 
-const marketTrends = [
-    {
-        title: "Emerging Technologies in Fintech",
-        description: "Analysis of emerging trends in financial technology and their potential impact on markets.",
-    },
-    {
-        title: "ESG Investing on the Rise",
-        description: "Exploring the growing trend of Environmental, Social, and Governance (ESG) investing.",
-    },
-    {
-        title: "Cryptocurrency Market Evolution",
-        description: "Examining the evolving trends in the cryptocurrency market and potential future developments.",
-    },
-    {
-        title: "AI and Machine Learning in Trading",
-        description: "Investigating the increasing role of AI and machine learning in modern trading strategies.",
-    },
-]
+import { useEffect, useState } from 'react';
+import { BlogCard } from '@/components/BlogCard';
+import { Card } from '@/components/ui/card';
+
+interface Blog {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    coverImage: string | null;
+    accessType: string;
+    price: number | null;
+    category: {
+        name: string;
+        slug: string;
+    };
+}
 
 export default function MarketTrends() {
-    return (
-        <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">Market Trends</h1>
-            <div className="grid md:grid-cols-2 gap-8">
-                {marketTrends.map((trend, index) => (
-                    <Card key={index}>
-                        <CardHeader>
-                            <CardTitle>{trend.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="mb-4">{trend.description}</p>
-                            <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">Read Full Report</Button>
-                        </CardContent>
-                    </Card>
-                ))}
+    const [blogs, setBlogs] = useState<Blog[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchBlogs();
+    }, []);
+
+    const fetchBlogs = async () => {
+        try {
+            const response = await fetch('/api/blogs?category=trends');
+            if (response.ok) {
+                const data = await response.json();
+                setBlogs(data.blogs || []);
+            }
+        } catch (error) {
+            console.error('Failed to fetch blogs:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-12">
+                <div className="text-center">Loading...</div>
             </div>
+        );
+    }
+
+    return (
+        <div className="max-w-7xl mx-auto px-4 py-12">
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">
+                Market Trends
+            </h1>
+            <p className="text-center text-gray-600 mb-8">
+                Analysis of emerging market trends and developments
+            </p>
+
+            {blogs.length === 0 ? (
+                <Card className="p-8 text-center">
+                    <p className="text-gray-600">No market trends available yet</p>
+                </Card>
+            ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {blogs.map((blog) => (
+                        <BlogCard key={blog.id} {...blog} />
+                    ))}
+                </div>
+            )}
         </div>
-    )
+    );
 }
 

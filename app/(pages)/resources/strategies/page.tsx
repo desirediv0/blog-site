@@ -1,52 +1,81 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+'use client';
 
-const strategies = [
-    {
-        title: "Essential Trading Psychology Tips",
-        description:
-            "Learn how to master your emotions and develop a winning mindset for successful trading.",
-    },
-    {
-        title: "Technical Analysis Fundamentals",
-        description:
-            "Ma ster the basics of chart patterns, indicators, and technical analysis tools.",
-    },
-    {
-        title: "Position Sizing Strategies",
-        description:
-            "Discover effective position sizing methods to optimize your risk-reward ratio.",
-    },
-    {
-        title: "Building a Trading System",
-        description:
-            "Step-by-step guide to creating and testing your own trading strategy.",
-    },
-];
+export const dynamic = 'force-dynamic';
 
-export default function strategiesAndEbooks() {
-  return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)] capitalize">
-        strategies & Ebooks
-      </h1>
-      <div className="grid md:grid-cols-2 gap-8">
-        {strategies.map((guide, index) => (
-          <Card key={index}>
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold">
-                {guide.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="mb-4">{guide.description}</p>
-              <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)] text-white">
-                Read Guide
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
+import { useEffect, useState } from 'react';
+import { ResourceCard } from '@/components/ResourceCard';
+import { Card } from '@/components/ui/card';
+
+interface Resource {
+    id: string;
+    title: string;
+    slug: string;
+    description: string;
+    coverImage: string | null;
+    accessType: string;
+    price: number | null;
+    hasAccess: boolean;
+    category: {
+        name: string;
+        slug: string;
+    };
+}
+
+export default function StrategiesAndEbooks() {
+    const [resources, setResources] = useState<Resource[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const accessType = params.get('accessType');
+        fetchResources(accessType || undefined);
+    }, []);
+
+    const fetchResources = async (accessType?: string) => {
+        try {
+            const url = accessType
+                ? `/api/resources?accessType=${accessType}`
+                : '/api/resources?category=strategies';
+            const response = await fetch(url);
+            if (response.ok) {
+                const data = await response.json();
+                setResources(data.resources || []);
+            }
+        } catch (error) {
+            console.error('Failed to fetch resources:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-12">
+                <div className="text-center">Loading...</div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="max-w-7xl mx-auto px-4 py-12">
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">
+                Strategies & Ebooks
+            </h1>
+            <p className="text-center text-gray-600 mb-8">
+                Discover proven trading strategies and comprehensive ebooks
+            </p>
+
+            {resources.length === 0 ? (
+                <Card className="p-8 text-center">
+                    <p className="text-gray-600">No strategies available yet</p>
+                </Card>
+            ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {resources.map((resource) => (
+                        <ResourceCard key={resource.id} {...resource} />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
 }

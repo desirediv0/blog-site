@@ -1,43 +1,82 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+'use client';
 
-const courses = [
-    {
-        title: "Technical Analysis Fundamentals",
-        description: "A mini-course covering the basics of technical analysis for beginners.",
-    },
-    {
-        title: "Advanced Candlestick Patterns",
-        description: "An in-depth course on identifying and trading with complex candlestick patterns.",
-    },
-    {
-        title: "Risk Management Mastery",
-        description: "Learn how to effectively manage risk in your trading with this comprehensive course.",
-    },
-    {
-        title: "Algorithmic Trading Blueprint",
-        description: "A step-by-step guide to creating and implementing your own trading algorithms.",
-    },
-]
+export const dynamic = 'force-dynamic';
+
+import { useEffect, useState } from 'react';
+import { ResourceCard } from '@/components/ResourceCard';
+import { Card } from '@/components/ui/card';
+
+interface Resource {
+    id: string;
+    title: string;
+    slug: string;
+    description: string;
+    coverImage: string | null;
+    accessType: string;
+    price: number | null;
+    hasAccess: boolean;
+    category: {
+        name: string;
+        slug: string;
+    };
+}
 
 export default function MiniCoursesAndBlueprints() {
-    return (
-        <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">Mini Courses & Blueprints</h1>
-            <div className="grid md:grid-cols-2 gap-8">
-                {courses.map((course, index) => (
-                    <Card key={index}>
-                        <CardHeader>
-                            <CardTitle>{course.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="mb-4">{course.description}</p>
-                            <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">Start Course</Button>
-                        </CardContent>
-                    </Card>
-                ))}
+    const [resources, setResources] = useState<Resource[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const accessType = params.get('accessType');
+        fetchResources(accessType || undefined);
+    }, []);
+
+    const fetchResources = async (accessType?: string) => {
+        try {
+            const url = accessType
+                ? `/api/resources?accessType=${accessType}`
+                : '/api/resources?category=courses';
+            const response = await fetch(url);
+            if (response.ok) {
+                const data = await response.json();
+                setResources(data.resources || []);
+            }
+        } catch (error) {
+            console.error('Failed to fetch resources:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-12">
+                <div className="text-center">Loading...</div>
             </div>
+        );
+    }
+
+    return (
+        <div className="max-w-7xl mx-auto px-4 py-12">
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">
+                Mini Courses & Blueprints
+            </h1>
+            <p className="text-center text-gray-600 mb-8">
+                Learn trading with our comprehensive courses
+            </p>
+
+            {resources.length === 0 ? (
+                <Card className="p-8 text-center">
+                    <p className="text-gray-600">No courses available yet</p>
+                </Card>
+            ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {resources.map((resource) => (
+                        <ResourceCard key={resource.id} {...resource} />
+                    ))}
+                </div>
+            )}
         </div>
-    )
+    );
 }
 

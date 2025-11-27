@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, FormEvent } from "react"
+import { useRouter } from "next/navigation"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -17,11 +18,27 @@ const suggestions = [
 export function SearchBar() {
     const [query, setQuery] = useState("")
     const [showSuggestions, setShowSuggestions] = useState(false)
+    const router = useRouter()
 
-    const filteredSuggestions = suggestions.filter((suggestion) => suggestion.toLowerCase().includes(query.toLowerCase()))
+    const filteredSuggestions = suggestions.filter((suggestion) => 
+        query === "" || suggestion.toLowerCase().includes(query.toLowerCase())
+    )
+
+    const handleSearch = (e: FormEvent) => {
+        e.preventDefault()
+        if (query.trim()) {
+            router.push(`/blogs?search=${encodeURIComponent(query.trim())}`)
+        }
+    }
+
+    const handleSuggestionClick = (suggestion: string) => {
+        setQuery(suggestion)
+        setShowSuggestions(false)
+        router.push(`/blogs?search=${encodeURIComponent(suggestion)}`)
+    }
 
     return (
-        <div className="relative mx-auto max-w-2xl mb-12 group">
+        <form onSubmit={handleSearch} className="relative mx-auto max-w-2xl mb-12 group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-[var(--custom-500)] transition-colors" />
             <Input
                 type="text"
@@ -36,20 +53,21 @@ export function SearchBar() {
                    hover:border-[var(--custom-200)] hover:shadow-xl"
             />
             {showSuggestions && filteredSuggestions.length > 0 && (
-                <div className="absolute z-10 w-full mt-2 bg-white rounded-xl shadow-lg border border-[var(--custom-100)]">
+                <div className="absolute z-10 w-full mt-2 bg-white rounded-xl shadow-lg border border-[var(--custom-100)] max-h-60 overflow-y-auto">
                     {filteredSuggestions.map((suggestion, index) => (
                         <Button
                             key={index}
+                            type="button"
                             variant="ghost"
                             className="w-full justify-start text-left px-4 py-2 hover:bg-[var(--custom-50)]"
-                            onClick={() => setQuery(suggestion)}
+                            onClick={() => handleSuggestionClick(suggestion)}
                         >
                             {suggestion}
                         </Button>
                     ))}
                 </div>
             )}
-        </div>
+        </form>
     )
 }
 

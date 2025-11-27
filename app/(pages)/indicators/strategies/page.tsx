@@ -1,43 +1,77 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+'use client';
 
-const strategies = [
-    {
-        title: "Mean Reversion Strategy",
-        description: "A detailed breakdown of a mean reversion trading strategy using custom indicators.",
-    },
-    {
-        title: "Trend Following with Moving Averages",
-        description: "An in-depth look at a trend following strategy using multiple moving averages.",
-    },
-    {
-        title: "Breakout Trading Strategy",
-        description: "Analysis of a breakout trading strategy with custom entry and exit rules.",
-    },
-    {
-        title: "Pairs Trading Strategy",
-        description: "Explanation of a pairs trading strategy using correlation and statistical analysis.",
-    },
-]
+export const dynamic = 'force-dynamic';
+
+import { useEffect, useState } from 'react';
+import { ResourceCard } from '@/components/ResourceCard';
+import { Card } from '@/components/ui/card';
+
+interface Resource {
+    id: string;
+    title: string;
+    slug: string;
+    description: string;
+    coverImage: string | null;
+    accessType: string;
+    price: number | null;
+    hasAccess: boolean;
+    category: {
+        name: string;
+        slug: string;
+    };
+}
 
 export default function StrategyBreakdown() {
-    return (
-        <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">Strategy Breakdown</h1>
-            <div className="grid md:grid-cols-2 gap-8">
-                {strategies.map((strategy, index) => (
-                    <Card key={index}>
-                        <CardHeader>
-                            <CardTitle>{strategy.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="mb-4">{strategy.description}</p>
-                            <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">View Strategy</Button>
-                        </CardContent>
-                    </Card>
-                ))}
+    const [resources, setResources] = useState<Resource[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchResources();
+    }, []);
+
+    const fetchResources = async () => {
+        try {
+            const response = await fetch('/api/resources?category=indicator-strategies');
+            if (response.ok) {
+                const data = await response.json();
+                setResources(data.resources);
+            }
+        } catch (error) {
+            console.error('Failed to fetch resources:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-12">
+                <div className="text-center">Loading...</div>
             </div>
+        );
+    }
+
+    return (
+        <div className="max-w-7xl mx-auto px-4 py-12">
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">
+                Strategy Breakdown
+            </h1>
+            <p className="text-center text-gray-600 mb-8">
+                Detailed breakdowns of trading strategies using indicators
+            </p>
+
+            {resources.length === 0 ? (
+                <Card className="p-8 text-center">
+                    <p className="text-gray-600">No strategies available yet</p>
+                </Card>
+            ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {resources.map((resource) => (
+                        <ResourceCard key={resource.id} {...resource} />
+                    ))}
+                </div>
+            )}
         </div>
-    )
+    );
 }
 

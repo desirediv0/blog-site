@@ -3,8 +3,9 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 
 import type React from "react"
-import { NavMenu } from "@/components/nav-menu"
-import { Footer } from "@/components/footer"
+import { AuthProvider } from "@/components/auth-provider"
+import { Toaster } from "react-hot-toast"
+import { ConditionalLayout } from "@/components/conditional-layout"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -21,15 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          <header className="sticky top-0 z-50 w-full border-b bg-white/50 backdrop-blur-lg">
-            <div className="container mx-auto px-4 py-4">
-              <NavMenu />
-            </div>
-          </header>
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
+        <AuthProvider>
+          <Toaster position="top-right" />
+          <ConditionalLayout>{children}</ConditionalLayout>
+        </AuthProvider>
       </body>
     </html>
   )

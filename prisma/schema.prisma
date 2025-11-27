@@ -1,0 +1,274 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum AccessType {
+  FREE
+  PAID
+  SUBSCRIPTION
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model User {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  password            String
+  name                String?
+  role                Role      @default(USER)
+  banned              Boolean   @default(false)
+  emailVerified       Boolean   @default(false)
+  otp                 String?
+  otpExpires          DateTime?
+  tempPassword        String? // Temporarily store password for auto-login after verification
+  tempPasswordExpires DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  blogs             Blog[]
+  resources         Resource[]
+  payments          Payment[]
+  subscriptions     Subscription[]
+  blogPurchases     BlogPurchase[]
+  resourcePurchases ResourcePurchase[]
+  comments          Comment[]
+  bookmarks         Bookmark[]
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  blogs     Blog[]
+  resources Resource[]
+}
+
+model Blog {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  content     String     @db.Text
+  excerpt     String?
+  coverImage  String?
+  accessType  AccessType @default(FREE)
+  price       Float?
+  published   Boolean    @default(false)
+  publishedAt DateTime?
+  featured    Boolean    @default(false)
+
+  // SEO Fields
+  metaTitle       String?
+  metaDescription String?
+  keywords        String[]
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchases BlogPurchase[]
+  comments  Comment[]
+  tags      Tag[]
+  bookmarks Bookmark[]
+}
+
+model Resource {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  description String     @db.Text
+  content     String     @db.Text
+  coverImage  String?
+  codeBlocks  Json? // Store code blocks as JSON
+  accessType  AccessType @default(FREE)
+  price       Float?
+  published   Boolean    @default(false)
+  publishedAt DateTime?
+  featured    Boolean    @default(false)
+
+  // SEO Fields
+  metaTitle       String?
+  metaDescription String?
+  keywords        String[]
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchases ResourcePurchase[]
+  tags      Tag[]
+}
+
+model BlogPurchase {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  blogId    String
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  paymentId String?
+  payment   Payment? @relation(fields: [paymentId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, blogId])
+}
+
+model ResourcePurchase {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  resourceId String
+  resource   Resource @relation(fields: [resourceId], references: [id])
+  paymentId  String?
+  payment    Payment? @relation(fields: [paymentId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, resourceId])
+}
+
+model SubscriptionPlan {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  price       Float
+  duration    Int // Duration in months (1 for monthly, 12 for yearly)
+  features    String[] // Array of features
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                     String             @id @default(cuid())
+  userId                 String
+  user                   User               @relation(fields: [userId], references: [id])
+  planId                 String?
+  plan                   SubscriptionPlan?  @relation(fields: [planId], references: [id])
+  razorpaySubscriptionId String?            @unique
+  status                 SubscriptionStatus @default(ACTIVE)
+  startDate              DateTime           @default(now())
+  endDate                DateTime
+  cancelledAt            DateTime?
+  price                  Float // Store the price at time of subscription
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  payments Payment[]
+}
+
+model Payment {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  amount   Float
+  currency String        @default("INR")
+  status   PaymentStatus @default(PENDING)
+
+  razorpayOrderId   String? @unique
+  razorpayPaymentId String? @unique
+  razorpaySignature String?
+
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  metadata Json? // Store additional info like item type, item id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blogPurchases     BlogPurchase[]
+  resourcePurchases ResourcePurchase[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  blogId    String
+  userId    String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([blogId])
+  @@index([userId])
+}
+
+model Tag {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  blogs       Blog[]
+  resources   Resource[]
+
+  @@index([name])
+  @@index([slug])
+}
+
+model Setting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String   @db.Text
+  type        String   @default("string") // string, number, boolean, json
+  category    String   @default("general") // general, payment, email, storage
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
+  @@index([category])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  blogId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blogId])
+  @@index([userId])
+  @@index([blogId])
+}

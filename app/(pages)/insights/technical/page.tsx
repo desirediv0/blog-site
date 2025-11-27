@@ -1,44 +1,74 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+'use client';
 
-const technicalCommentary = [
-    {
-        title: "S&P 500 Technical Analysis",
-        description: "In-depth technical analysis of S&P 500, including key support and resistance levels.",
-    },
-    {
-        title: "EUR/USD Forex Pair Analysis",
-        description:
-            "Technical commentary on the EUR/USD forex pair, including trend analysis and potential entry/exit points.",
-    },
-    {
-        title: "Gold Price Action",
-        description: "Detailed analysis of gold's recent price action and potential future movements.",
-    },
-    {
-        title: "Tesla Stock Technical Outlook",
-        description: "Technical analysis of Tesla stock, including chart patterns and indicator readings.",
-    },
-]
+import { useEffect, useState } from 'react';
+import { BlogCard } from '@/components/BlogCard';
+import { Card } from '@/components/ui/card';
+
+interface Blog {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    coverImage: string | null;
+    accessType: string;
+    price: number | null;
+    category: {
+        name: string;
+        slug: string;
+    };
+}
 
 export default function TechnicalCommentary() {
-    return (
-        <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">Technical Commentary</h1>
-            <div className="grid md:grid-cols-2 gap-8">
-                {technicalCommentary.map((commentary, index) => (
-                    <Card key={index}>
-                        <CardHeader>
-                            <CardTitle>{commentary.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="mb-4">{commentary.description}</p>
-                            <Button className="bg-[var(--custom-600)] hover:bg-[var(--custom-700)]">View Full Analysis</Button>
-                        </CardContent>
-                    </Card>
-                ))}
+    const [blogs, setBlogs] = useState<Blog[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchBlogs();
+    }, []);
+
+    const fetchBlogs = async () => {
+        try {
+            const response = await fetch('/api/blogs?category=technical');
+            if (response.ok) {
+                const data = await response.json();
+                setBlogs(data.blogs || []);
+            }
+        } catch (error) {
+            console.error('Failed to fetch blogs:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-12">
+                <div className="text-center">Loading...</div>
             </div>
+        );
+    }
+
+    return (
+        <div className="max-w-7xl mx-auto px-4 py-12">
+            <h1 className="text-4xl font-bold mb-8 text-center text-[var(--custom-500)]">
+                Technical Commentary
+            </h1>
+            <p className="text-center text-gray-600 mb-8">
+                In-depth technical analysis and market commentary
+            </p>
+
+            {blogs.length === 0 ? (
+                <Card className="p-8 text-center">
+                    <p className="text-gray-600">No technical commentary available yet</p>
+                </Card>
+            ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {blogs.map((blog) => (
+                        <BlogCard key={blog.id} {...blog} />
+                    ))}
+                </div>
+            )}
         </div>
-    )
+    );
 }
 
