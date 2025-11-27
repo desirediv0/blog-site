@@ -540,7 +540,7 @@ export function NavMenu() {
   );
 
   return (
-    <div className="flex items-center justify-between px-3 sm:px-6 py-3">
+    <div className="flex items-center justify-between px-3 sm:px-6 py-2">
       <div className="flex items-center gap-3 sm:gap-6">
         <Logo />
         <div className="hidden lg:block">

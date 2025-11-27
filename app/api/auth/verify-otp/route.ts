@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import crypto from "crypto";
 
 const verifyOtpSchema = z.object({
   email: z.string().email("Invalid email address"),
   otp: z.string().length(6, "OTP must be 6 digits"),
 });
+
+// Generate a secure verification token for auto-login
+function generateVerificationToken(): string {
+  return crypto.randomBytes(32).toString("base64url");
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,13 +39,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify user email and clear OTP
+    // Generate a verification token for auto-login (valid for 5 minutes)
+    const verificationToken = generateVerificationToken();
+    const verificationTokenExpires = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+
+    // Verify user email, clear OTP, and set verification token for auto-login
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {
         emailVerified: true,
         otp: null,
         otpExpires: null,
+        verificationToken: verificationToken,
+        verificationTokenExpires: verificationTokenExpires,
       },
       select: {
         id: true,
@@ -53,6 +65,7 @@ export async function POST(req: NextRequest) {
       {
         message: "Email verified successfully",
         user: updatedUser,
+        verificationToken: verificationToken, // Return token for auto-login
       },
       { status: 200 }
     );

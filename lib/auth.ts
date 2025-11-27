@@ -41,6 +41,36 @@ export const authOptions: NextAuthOptions = {
                     throw new Error('Please verify your email address before signing in. Check your inbox for the OTP.');
                 }
 
+                // Check if password is a verification token (format: VERIFY_TOKEN_<token>)
+                if (credentials.password.startsWith('VERIFY_TOKEN_')) {
+                    const token = credentials.password.replace('VERIFY_TOKEN_', '');
+                    
+                    // Check if verification token matches and is not expired
+                    if (user.verificationToken === token && 
+                        user.verificationTokenExpires && 
+                        user.verificationTokenExpires > new Date()) {
+                        // Clear verification token after use
+                        await prisma.user.update({
+                            where: { id: user.id },
+                            data: {
+                                verificationToken: null,
+                                verificationTokenExpires: null,
+                            },
+                        });
+                        
+                        // Return user for login
+                        return {
+                            id: user.id,
+                            email: user.email,
+                            name: user.name,
+                            role: user.role,
+                        };
+                    } else {
+                        throw new Error('Invalid or expired verification token');
+                    }
+                }
+
+                // Normal password check
                 const isPasswordValid = await compare(credentials.password, user.password);
 
                 if (!isPasswordValid) {

@@ -18,7 +18,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="min-h-screen flex flex-col">
             <header className="sticky top-0 z-50 w-full border-b bg-white/50 backdrop-blur-lg">
-                <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-3">
+                <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2">
                     <NavMenu />
                 </div>
             </header>

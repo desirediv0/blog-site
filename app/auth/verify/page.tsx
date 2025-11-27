@@ -76,25 +76,13 @@ function VerifyContent() {
       // Auto-login the user after successful verification
       toast.success("Email verified successfully! Logging you in...");
 
-      // Call auto-login API
-      try {
-        const loginResponse = await fetch("/api/auth/auto-login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-          }),
-        });
-
-        const loginData = await loginResponse.json();
-
-        if (loginResponse.ok && loginData.success) {
-          // Use NextAuth signIn to establish session
+      // Use verification token to login directly
+      if (data.verificationToken) {
+        try {
+          // Use NextAuth signIn with verification token
           const result = await signIn("credentials", {
             email,
-            password: loginData.tempPassword,
+            password: `VERIFY_TOKEN_${data.verificationToken}`,
             redirect: false,
           });
 
@@ -104,8 +92,8 @@ function VerifyContent() {
             toast.error("Auto-login failed. Please sign in manually.");
             const signinUrl = callbackUrl
               ? `/auth/signin?message=Email verified successfully. Please sign in.&callbackUrl=${encodeURIComponent(
-                callbackUrl
-              )}`
+                  callbackUrl
+                )}`
               : "/auth/signin?message=Email verified successfully. Please sign in.";
             router.push(signinUrl);
             return;
@@ -135,28 +123,28 @@ function VerifyContent() {
               router.refresh();
             }
           }
-        } else {
-          // Fallback to signin page
+        } catch (error) {
+          console.error("Auto-login error:", error);
           setLoading(false);
-          toast.error(
-            loginData.error || "Auto-login failed. Please sign in manually."
-          );
+          toast.error("Auto-login failed. Please sign in manually.");
+          // Fallback to signin page
           const signinUrl = callbackUrl
             ? `/auth/signin?message=Email verified successfully. Please sign in.&callbackUrl=${encodeURIComponent(
-              callbackUrl
-            )}`
+                callbackUrl
+              )}`
             : "/auth/signin?message=Email verified successfully. Please sign in.";
           router.push(signinUrl);
         }
-      } catch (error) {
-        console.error("Auto-login error:", error);
+      } else {
+        // Fallback if no verification token
         setLoading(false);
-        toast.error("Auto-login failed. Please sign in manually.");
-        // Fallback to signin page
+        toast.error(
+          "Verification token not received. Please sign in manually."
+        );
         const signinUrl = callbackUrl
           ? `/auth/signin?message=Email verified successfully. Please sign in.&callbackUrl=${encodeURIComponent(
-            callbackUrl
-          )}`
+              callbackUrl
+            )}`
           : "/auth/signin?message=Email verified successfully. Please sign in.";
         router.push(signinUrl);
       }
@@ -303,8 +291,8 @@ function VerifyContent() {
                   {resendLoading
                     ? "Sending..."
                     : countdown > 0
-                      ? `Resend OTP in ${countdown}s`
-                      : "Resend OTP"}
+                    ? `Resend OTP in ${countdown}s`
+                    : "Resend OTP"}
                 </button>
               </div>
             </form>
@@ -340,7 +328,13 @@ function VerifyContent() {
 
 export default function VerifyPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-100">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+          Loading...
+        </div>
+      }
+    >
       <VerifyContent />
     </Suspense>
   );

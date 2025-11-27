@@ -38,11 +38,13 @@ model User {
   name                String?
   role                Role      @default(USER)
   banned              Boolean   @default(false)
-  emailVerified       Boolean   @default(false)
-  otp                 String?
-  otpExpires          DateTime?
-  tempPassword        String? // Temporarily store password for auto-login after verification
-  tempPasswordExpires DateTime?
+  emailVerified           Boolean   @default(false)
+  otp                     String?
+  otpExpires              DateTime?
+  tempPassword            String? // Temporarily store password for auto-login after verification
+  tempPasswordExpires     DateTime?
+  verificationToken       String? // Token for auto-login after email verification
+  verificationTokenExpires DateTime?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 

@@ -98,6 +98,38 @@ export async function GET() {
                     },
                     take: 50,
                 },
+                bookmarks: {
+                    include: {
+                        blog: {
+                            select: {
+                                id: true,
+                                title: true,
+                                slug: true,
+                                coverImage: true,
+                                excerpt: true,
+                                accessType: true,
+                                price: true,
+                                publishedAt: true,
+                                author: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                    },
+                                },
+                                category: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                        slug: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    orderBy: {
+                        createdAt: 'desc',
+                    },
+                },
             },
         });
 

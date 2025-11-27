@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 interface UserProfile {
   id: string;
@@ -49,6 +50,29 @@ interface UserProfile {
       id: string;
       status: string;
     } | null;
+  }>;
+  bookmarks: Array<{
+    id: string;
+    createdAt: string;
+    blog: {
+      id: string;
+      title: string;
+      slug: string;
+      coverImage: string | null;
+      excerpt: string | null;
+      accessType: string;
+      price: number | null;
+      publishedAt: Date | null;
+      author: {
+        id: string;
+        name: string | null;
+      };
+      category: {
+        id: string;
+        name: string;
+        slug: string;
+      };
+    };
   }>;
 }
 
@@ -142,9 +166,10 @@ export default function UserProfilePage() {
       </div>
 
       <Tabs defaultValue="purchases" className="w-full">
-        <TabsList className="grid w-full max-w-2xl grid-cols-4">
+        <TabsList className="grid w-full max-w-2xl grid-cols-5">
           <TabsTrigger value="purchases">Purchases</TabsTrigger>
           <TabsTrigger value="resources">Resources</TabsTrigger>
+          <TabsTrigger value="bookmarks">Bookmarks</TabsTrigger>
           <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
           <TabsTrigger value="payments">Payment History</TabsTrigger>
         </TabsList>
@@ -263,6 +288,129 @@ export default function UserProfilePage() {
                           View Resource
                         </Button>
                       </Link>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="bookmarks" className="mt-6">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold mb-6">My Bookmarks</h2>
+            {profile.bookmarks.length === 0 ? (
+              <Card className="p-8 text-center border-2 border-dashed">
+                <p className="text-gray-500 text-lg">No bookmarks yet</p>
+                <Link href="/blogs" className="mt-4 inline-block">
+                  <Button variant="outline">Browse Blogs</Button>
+                </Link>
+              </Card>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-3">
+                {profile.bookmarks.map((bookmark) => (
+                  <Card
+                    key={bookmark.id}
+                    className="p-6 hover:shadow-lg transition-shadow border border-gray-200"
+                  >
+                    <div className="flex flex-col h-full">
+                      <div className="flex-grow">
+                        {bookmark.blog.coverImage && (
+                          <div className="mb-4 rounded-lg overflow-hidden">
+                            <Image
+                              src={bookmark.blog.coverImage}
+                              alt={bookmark.blog.title}
+                              className="w-full h-48 object-cover"
+                              width={400}
+                              height={192}
+                            />
+                          </div>
+                        )}
+                        <h3 className="text-lg font-bold mb-3 text-gray-900 line-clamp-2">
+                          {bookmark.blog.title}
+                        </h3>
+                        {bookmark.blog.excerpt && (
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                            {bookmark.blog.excerpt}
+                          </p>
+                        )}
+                        <div className="space-y-2 mb-4">
+                          <p className="text-sm text-gray-600 flex items-center gap-2">
+                            <span className="font-medium">Category:</span>
+                            <span>{bookmark.blog.category.name}</span>
+                          </p>
+                          <p className="text-sm text-gray-600 flex items-center gap-2">
+                            <span className="font-medium">Author:</span>
+                            <span>{bookmark.blog.author.name || "Unknown"}</span>
+                          </p>
+                          <p className="text-sm text-gray-600 flex items-center gap-2">
+                            <span className="font-medium">Bookmarked:</span>
+                            <span>
+                              {new Date(bookmark.createdAt).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )}
+                            </span>
+                          </p>
+                          {bookmark.blog.accessType !== "FREE" && (
+                            <p className="text-sm text-gray-600 flex items-center gap-2">
+                              <span className="font-medium">Access:</span>
+                              <span className="capitalize">
+                                {bookmark.blog.accessType.toLowerCase()}
+                              </span>
+                              {bookmark.blog.price && (
+                                <span className="text-green-600 font-semibold ml-2">
+                                  ₹{bookmark.blog.price}
+                                </span>
+                              )}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-2 mt-auto">
+                        <Link
+                          href={`/blogs/${bookmark.blog.slug}`}
+                          className="flex-1"
+                        >
+                          <Button className="w-full bg-[var(--custom-600)] hover:bg-[var(--custom-700)] text-white">
+                            Read Blog
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="outline"
+                          onClick={async () => {
+                            try {
+                              const response = await fetch("/api/bookmarks", {
+                                method: "DELETE",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                  blogId: bookmark.blog.id,
+                                }),
+                              });
+
+                              if (response.ok) {
+                                toast.success("Bookmark removed");
+                                fetchProfile();
+                              } else {
+                                const data = await response.json();
+                                toast.error(data.error || "Failed to remove bookmark");
+                              }
+                            } catch (error) {
+                              console.error("Failed to remove bookmark:", error);
+                              toast.error("Failed to remove bookmark");
+                            }
+                          }}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                        >
+                          Remove
+                        </Button>
+                      </div>
                     </div>
                   </Card>
                 ))}
