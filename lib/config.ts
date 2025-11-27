@@ -26,12 +26,6 @@ export const config = {
     publicKeyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "", // For reference only
   },
 
-  // Subscription
-  subscription: {
-    planId: process.env.SUBSCRIPTION_PLAN_ID || "",
-    monthlyPrice: Number(process.env.SUBSCRIPTION_MONTHLY_PRICE) || 499,
-  },
-
   // App
   app: {
     url: process.env.APP_URL || "http://localhost:3000",
@@ -87,7 +81,7 @@ export function validateEnv() {
   if (missing.length > 0) {
     throw new Error(
       `Missing required environment variables: ${missing.join(", ")}\n` +
-        "Please check your .env file."
+      "Please check your .env file."
     );
   }
 }
