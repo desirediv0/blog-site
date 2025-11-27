@@ -23,6 +23,9 @@ function SignInContent() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [resendLoading, setResendLoading] = useState(false);
+    const [countdown, setCountdown] = useState(0);
+    const [showResendOtp, setShowResendOtp] = useState(false);
 
     // Redirect if already authenticated
     useEffect(() => {
@@ -45,9 +48,18 @@ function SignInContent() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Only run once on mount
 
+    // Countdown timer for resend OTP
+    useEffect(() => {
+        if (countdown > 0) {
+            const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [countdown]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+        setShowResendOtp(false);
         setLoading(true);
 
         try {
@@ -64,6 +76,13 @@ function SignInContent() {
                 setError(errorMessage);
                 toast.error(errorMessage);
                 setLoading(false);
+                
+                // Show resend OTP button if email verification error
+                if (result.error.includes('verify') && email) {
+                    setShowResendOtp(true);
+                } else {
+                    setShowResendOtp(false);
+                }
             } else {
                 toast.success('Signed in successfully!');
 
@@ -100,6 +119,46 @@ function SignInContent() {
         }
     };
 
+    const handleResendOtp = async () => {
+        if (countdown > 0 || !email) return;
+
+        setResendLoading(true);
+        setError('');
+
+        try {
+            const response = await fetch('/api/auth/resend-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.error || 'Failed to resend OTP');
+                toast.error(data.error || 'Failed to resend OTP');
+                setResendLoading(false);
+                return;
+            }
+
+            toast.success('OTP sent successfully! Redirecting to verification page...');
+            setCountdown(60); // 60 seconds cooldown
+            setResendLoading(false);
+            
+            // Redirect to verify page
+            const verifyUrl = callbackUrl
+                ? `/auth/verify?email=${encodeURIComponent(email)}&callbackUrl=${encodeURIComponent(callbackUrl)}`
+                : `/auth/verify?email=${encodeURIComponent(email)}`;
+            router.push(verifyUrl);
+        } catch {
+            setError('Something went wrong');
+            toast.error('Something went wrong');
+            setResendLoading(false);
+        }
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--custom-50)] via-white to-[var(--custom-50)] py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
@@ -124,8 +183,27 @@ function SignInContent() {
                     <CardContent>
                         <form className="space-y-5" onSubmit={handleSubmit}>
                             {error && (
-                                <div className="rounded-lg bg-red-50 border border-red-200 p-3">
+                                <div className="rounded-lg bg-red-50 border border-red-200 p-3 space-y-2">
                                     <p className="text-sm text-red-800 font-medium">{error}</p>
+                                    {showResendOtp && email && (
+                                        <div className="mt-2 pt-2 border-t border-red-200">
+                                            <p className="text-xs text-red-700 mb-2">
+                                                Didn&apos;t receive the OTP or it expired?
+                                            </p>
+                                            <button
+                                                type="button"
+                                                onClick={handleResendOtp}
+                                                disabled={resendLoading || countdown > 0}
+                                                className="text-sm font-semibold text-[var(--custom-600)] hover:text-[var(--custom-700)] disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+                                            >
+                                                {resendLoading
+                                                    ? 'Sending...'
+                                                    : countdown > 0
+                                                        ? `Resend OTP in ${countdown}s`
+                                                        : 'Resend OTP'}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
